@@ -4,7 +4,9 @@
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "module": "es2015",
-    "types": []
+    //agar bisa include require di angular
+    "types": [ "node" ],
+    "typeRoots": [ "../node_modules/@types" ]
   },
   "exclude": [
     "test.ts",

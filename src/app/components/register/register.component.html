@@ -1,0 +1,75 @@
+<div class="container" fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="center">
+  <div fxFlex="50%">
+  
+    <mat-card class="example-card">
+        <div class="example-container">
+            <form [formGroup]="resellerForm" (ngSubmit)="onSubmit()">
+                <mat-form-field>
+                <input matInput placeholder="Nama" type="text" formControlName="full_name">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <input matInput placeholder="Username" type="text" formControlName="username">
+                </mat-form-field>
+            
+                <mat-form-field>
+                    <input matInput placeholder="Password" type="text" formControlName="password">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <input matInput placeholder="Password Confirm" type="text" formControlName="passwordConfirm">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <input matInput placeholder="Nomor Telepon" type="text" formControlName="phone">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <input matInput placeholder="Facebook" type="text" formControlName="facebook">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <input matInput placeholder="Instagram" type="text" formControlName="instagram">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <input matInput placeholder="Line" type="text" formControlName="line">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-select placeholder="Provinsi" (change)="provinceSelected($event)">
+                        <mat-option *ngFor="let province of provinces" [value]="province.id">
+                        {{province.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-select placeholder="Kota" (change)="citySelected($event)">
+                        <mat-option *ngFor="let city of cities" [value]="city.id">
+                        {{city.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-select placeholder="Kecamatan">
+                        <mat-option *ngFor="let subdistrict of subdistricts" [value]="subdistrict.id">
+                        {{subdistrict.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                
+    
+                <mat-form-field>
+                <textarea matInput placeholder="Alamat"></textarea>
+                </mat-form-field>
+
+                    <input (change)="handleFile()" #fileInput type="file">
+                <img class="img-responsive mx-auto" width="200" src="{{ logoImage }}" alt="">
+                <button mat-flat-button color="primary" type="submit">Simpan</button>
+            </form>
+          </div>
+    </mat-card>
+  </div>
+</div>
