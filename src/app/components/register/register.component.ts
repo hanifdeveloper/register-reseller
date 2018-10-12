@@ -8,6 +8,8 @@ import { RegisterService } from './../../services/register.service';
 import { MatDialog } from '@angular/material';
 import { RegisterDialogComponent } from './../../components/shared/register-dialog/register-dialog.component';
 import { environment } from './../../../environments/environment';
+import 'rxjs/add/operator/debounceTime';
+import { MatSnackBar } from '@angular/material';
 
 
 import { UUID } from 'angular2-uuid';
@@ -32,6 +34,9 @@ const Dropbox = require('dropbox');
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  passwordMatch = true;
+  searchTerm: FormControl = new FormControl();
+  searchResult = [];
   provinces: any[];
   cities: any[];
   loading = false;
@@ -40,6 +45,7 @@ export class RegisterComponent implements OnInit {
   resellerForm: FormGroup;
   dbx: any;
   logoStatus: any;
+  csId: number;
   @ViewChild('fileInput') fileInput;
 
   constructor(
@@ -49,36 +55,75 @@ export class RegisterComponent implements OnInit {
     private subdistrictService: SubdistrictService,
     private provinceService: ProvinceService,
     private registerService: RegisterService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackbar: MatSnackBar
   ) {
     this.provinces = this.route.snapshot.data['provinces'].data;
     this.dbx = new Dropbox({ accessToken: environment.dropboxKey });
+    this.csId = this.route.snapshot.queryParams['ref'];
+    this.searchTerm.valueChanges
+    .debounceTime(200)
+    .subscribe(data => {
+      if (data) {
+        this.provinceService.searchProvince(data).subscribe(result => {
+          this.searchResult = result.data;
+        });
+      }
+    });
   }
+
 
   ngOnInit() {
     this.createForm();
   }
 
+  onEnter(event: any) {
+    this.resellerForm.controls.province_id.setValue(event.source.value.province_id);
+    this.cities = [{
+      id: event.source.value.city_id,
+      name: event.source.value.city_name,
+    }];
+    this.subdistricts = [{
+      id: event.source.value.subdistrict_id,
+      name: event.source.value.subdistrict_name,
+    }];
+    this.resellerForm.controls.city_id.setValue(event.source.value.city_id);
+    this.resellerForm.controls.subdistrict_id.setValue(event.source.value.subdistrict_id);
+    // tslint:disable-next-line:max-line-length
+    this.searchTerm.setValue(event.source.value.subdistrict_name + ', ' + event.source.value.city_name + ', ' + event.source.value.province_name);
+  }
+
+  confirmPassword(event) {
+    if (event.target.value === this.resellerForm.value.password) {
+      this.passwordMatch = true;
+    } else {
+      this.passwordMatch = false;
+    }
+  }
+
   createForm() {
     this.resellerForm = new FormGroup({
-      'full_name': new FormControl('zakuan', [Validators.required]),
-      'username': new FormControl('zakuan', [Validators.required]),
-      'password': new FormControl('3462645', [Validators.required]),
-      'passwordConfirm': new FormControl('3462645', [Validators.required]),
-      'phone': new FormControl('0564661123', [Validators.required]),
-      'facebook': new FormControl('Muhammad zakuan', [Validators.required]),
-      'instagram': new FormControl('Muhammad zakuan', [Validators.required]),
-      'line': new FormControl('Muhammad zakuan', [Validators.required]),
-      'province_id': new FormControl('1', [Validators.required]),
-      'city_id': new FormControl('1', [Validators.required]),
-      'subdistrict_id': new FormControl('1', [Validators.required]),
-      'postal_code': new FormControl('51171', [Validators.required]),
-      'role_id': new FormControl(14),
+      'full_name': new FormControl(null, [Validators.required]),
+      'username': new FormControl(null, [Validators.required]),
+      'email': new FormControl(null, [Validators.required]),
+      'password': new FormControl(null, [Validators.required]),
+      'phone': new FormControl(null, [Validators.required]),
+      'facebook': new FormControl(null, [Validators.required]),
+      'instagram': new FormControl(null),
+      'line': new FormControl(null, [Validators.required]),
+      'province_id': new FormControl(null, [Validators.required]),
+      'city_id': new FormControl(null, [Validators.required]),
+      'subdistrict_id': new FormControl(null, [Validators.required]),
+      'address': new FormControl(null, [Validators.required]),
+      'postal_code': new FormControl(null, [Validators.required]),
+      'is_unverified': new FormControl('unverified'),
       'logo_path': new FormControl(null),
       'is_has_logo': new FormControl(null),
       'db_file_id': new FormControl(null),
+      'maintenance_id': new FormControl(this.csId ? this.csId : 1),
     });
   }
+
 
   provinceSelected(event) {
     this.cityService.getCityByProvinceId(event.value).subscribe(
@@ -101,20 +146,40 @@ export class RegisterComponent implements OnInit {
     );
   }
 
+  open() {
+    this.openDialog({
+      user: {
+        full_name: 'zakuan',
+        reseller_code: 'RPST234'
+      },
+      order_code: '2222-053545'
+    });
+  }
+
+
   openDialog(data) {
     const dialogRef = this.dialog.open(RegisterDialogComponent, {
       data: {
-        name: data.full_name,
-        resellerCode: data.reseller_code
+        name: data.user.full_name,
+        resellerCode: data.user.reseller_code,
+        orderCode: data.order_code
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+    this.resetForm();
+
     });
   }
 
+  resetForm() {
+    this.resellerForm.reset();
+    this.searchTerm.setValue(null);
+    this.logoImage = null;
+  }
+
   async onSubmit() {
+    this.loading = true;
     if (this.fileInput && this.fileInput.nativeElement.files && this.fileInput.nativeElement.files[0]) {
       const logo = new UploadLogo;
       logo.name = this.fileInput.nativeElement.files[0].name;
@@ -126,19 +191,29 @@ export class RegisterComponent implements OnInit {
     }
     const valueForm = this.resellerForm.value;
     if (this.resellerForm.valid) {
-      delete valueForm.passwordConfirm;
       this.registerService.createReseller(valueForm).subscribe(
         response => {
-          this.openDialog(response.data);
+          console.log(response.data);
           this.loading = false;
+          this.openDialog(response.data);
         },
-        error => {
+        err => {
+          const error = err.json();
+          this.openSnackBar('Register gagal. ' + error.message, null);
           this.loading = false;
         },
       );
     } else {
+      console.log('failed');
       this.loading = false;
     }
+  }
+
+  openSnackBar(message, action) {
+    this.snackbar.open(message, action, {
+      panelClass: ['mat-warn-bg'],
+      duration: 2000,
+    });
   }
 
 
@@ -152,7 +227,7 @@ export class RegisterComponent implements OnInit {
       const extension = mime.extension(file.file.type) || '.jpeg';
       const response = await this.dbx.filesUpload(
         {
-          path: `${environment.dropboxPath}${filename}-${UUID.UUID()}.${extension}`,
+          path: `${environment.dropboxPath}/${filename}-${UUID.UUID()}.${extension}`,
           contents: file.file, autorename: true
         }
       );

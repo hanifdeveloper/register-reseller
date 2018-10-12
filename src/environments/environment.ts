@@ -6,6 +6,6 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000',
-  dropboxPath: '/testlogo/',
-  dropboxKey: 'DZnBVrQi8ycAAAAAAAAK7rKGOR8YTcAUInQj3SO6S_fsiP9rq2krH_ErCY5-CbYS'
+  dropboxPath: '/Logo',
+  dropboxKey: 'yJ5_8RVoZAAAAAAAAAAAMWonKgWAoc25PinXnKsXPtG_U-yc4U_dOUmJlPXhuY9M'
 };

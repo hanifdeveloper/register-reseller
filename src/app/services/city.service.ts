@@ -18,7 +18,7 @@ export class CityService {
       )
       .catch(
           (error: Response ) => {
-              return Observable.throw('Something went wrong ');
+            throw error;
           }
       );
   }

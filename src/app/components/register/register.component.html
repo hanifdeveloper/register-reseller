@@ -1,75 +1,112 @@
-<div class="container" fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="center">
-  <div fxFlex="50%">
-  
-    <mat-card class="example-card">
-        <div class="example-container">
-            <form [formGroup]="resellerForm" (ngSubmit)="onSubmit()">
-                <mat-form-field>
-                <input matInput placeholder="Nama" type="text" formControlName="full_name">
-                </mat-form-field>
-    
-                <mat-form-field>
-                    <input matInput placeholder="Username" type="text" formControlName="username">
-                </mat-form-field>
-            
-                <mat-form-field>
-                    <input matInput placeholder="Password" type="text" formControlName="password">
-                </mat-form-field>
-    
-                <mat-form-field>
-                    <input matInput placeholder="Password Confirm" type="text" formControlName="passwordConfirm">
-                </mat-form-field>
-    
-                <mat-form-field>
-                    <input matInput placeholder="Nomor Telepon" type="text" formControlName="phone">
-                </mat-form-field>
-    
-                <mat-form-field>
-                    <input matInput placeholder="Facebook" type="text" formControlName="facebook">
-                </mat-form-field>
-    
-                <mat-form-field>
-                    <input matInput placeholder="Instagram" type="text" formControlName="instagram">
-                </mat-form-field>
-    
-                <mat-form-field>
-                    <input matInput placeholder="Line" type="text" formControlName="line">
-                </mat-form-field>
-    
-                <mat-form-field>
-                    <mat-select placeholder="Provinsi" (change)="provinceSelected($event)">
-                        <mat-option *ngFor="let province of provinces" [value]="province.id">
-                        {{province.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-    
-                <mat-form-field>
-                    <mat-select placeholder="Kota" (change)="citySelected($event)">
-                        <mat-option *ngFor="let city of cities" [value]="city.id">
-                        {{city.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-    
-                <mat-form-field>
-                    <mat-select placeholder="Kecamatan">
-                        <mat-option *ngFor="let subdistrict of subdistricts" [value]="subdistrict.id">
-                        {{subdistrict.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                
-    
-                <mat-form-field>
-                <textarea matInput placeholder="Alamat"></textarea>
-                </mat-form-field>
+<div class="container" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center">
+  <div fxFlex="40%">
 
-                    <input (change)="handleFile()" #fileInput type="file">
-                <img class="img-responsive mx-auto" width="200" src="{{ logoImage }}" alt="">
-                <button mat-flat-button color="primary" type="submit">Simpan</button>
-            </form>
-          </div>
+      <mat-card class="example-card">
+            <mat-card-title class="title">
+                    PENDAFTARAN RESELLER PHOTOSTORY
+            </mat-card-title>
+            <hr class="style-two">
+            <mat-card-content>
+                <div class="example-container">
+                        <form [formGroup]="resellerForm" (ngSubmit)="onSubmit()">
+                            <mat-form-field>
+                                <input matInput placeholder="Nama" type="text" formControlName="full_name" required>
+                                <mat-error> Nama harus diisi</mat-error>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <input matInput placeholder="Email" type="text" formControlName="email" required>
+                                <mat-error> Email harus diisi</mat-error>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <input matInput placeholder="Username" type="text" formControlName="username" required>
+                                <mat-error> Username harus diisi </mat-error>
+                            </mat-form-field>
+                        
+                            <mat-form-field>
+                                <input matInput placeholder="Password" type="text" formControlName="password" required>
+                                <mat-error> Password harus diisi</mat-error>
+                            </mat-form-field>
+                
+                            <!-- <mat-form-field>
+                                <input matInput placeholder="Password Confirm" type="text" formControlName="passwordConfirm" required (keyup)="confirmPassword($event)" (blur)="confirmPassword($event)">
+                                <mat-error> Konfirmasi password</mat-error>
+                                <mat-error *ngIf="!passwordMatch"> Password tidak sama</mat-error>
+                            </mat-form-field> -->
+                            <mat-form-field>
+                                <input matInput placeholder="Nomor Telepon" type="text" formControlName="phone" required>
+                                <mat-error> Nomor Telepon harus diisi</mat-error>
+                            </mat-form-field>
+                
+                            <mat-form-field>
+                                <input matInput placeholder="Facebook" type="text" formControlName="facebook">
+                            </mat-form-field>
+                
+                            <mat-form-field>
+                                <input matInput placeholder="Instagram" type="text" formControlName="instagram">
+                            </mat-form-field>
+                
+                            <mat-form-field>
+                                <input matInput placeholder="Line" type="text" formControlName="line">
+                            </mat-form-field>
+                
+                            <mat-form-field class="example-full-width">
+                                <input type="text" placeholder="Cari alamat" aria-label="Number" matInput [formControl]="searchTerm" [matAutocomplete]="auto">
+                                <mat-autocomplete #auto="matAutocomplete">
+                                    <mat-option *ngFor="let item of searchResult" (onSelectionChange)="onEnter($event)" (click)="onEnter($event)" [value]="item">
+                                    {{ item.subdistrict_name }},  {{ item.city_name }},  {{ item.province_name }}
+                                    </mat-option>
+                                </mat-autocomplete>
+                                </mat-form-field>
+            
+                            <mat-form-field>
+                                <mat-select placeholder="Provinsi" (change)="provinceSelected($event)"  formControlName="province_id" required>
+                                    <mat-option *ngFor="let province of provinces" [value]="province.id">
+                                    {{province.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error> Provinsi harus diisi </mat-error>
+                            </mat-form-field>
+                
+                            <mat-form-field>
+                                <mat-select placeholder="Kota" (change)="citySelected($event)" formControlName="city_id" required>
+                                    <mat-option *ngFor="let city of cities" [value]="city.id">
+                                    {{city.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error> Kota harus diisi</mat-error>
+                            </mat-form-field>
+                
+                            <mat-form-field>
+                                <mat-select placeholder="Kecamatan" formControlName="subdistrict_id">
+                                    <mat-option *ngFor="let subdistrict of subdistricts" [value]="subdistrict.id" required>
+                                    {{subdistrict.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error> Kecamatan harus diisi</mat-error>
+                            </mat-form-field>
+                            
+                            <mat-form-field>
+                                <input matInput placeholder="Kode Pos" type="text" formControlName="postal_code">
+                            </mat-form-field>
+                
+                            <mat-form-field>
+                            <textarea matInput placeholder="Alamat" #input minlength="10" formControlName="address" required></textarea>
+                            <mat-hint align="end">{{input.value?.length || 0}}/10</mat-hint>
+                            <mat-error> Alamat harus diisi </mat-error>
+                            </mat-form-field>
+            
+                            <input (change)="handleFile()" #fileInput type="file" placeholder="Logo">
+                            <br>
+                                
+                            <img class="img-responsive mx-auto" width="200" src="{{ logoImage }}" alt="">
+                            <br>
+                            <button [disabled]="!resellerForm.valid || loading" mat-flat-button color="primary" type="submit">Simpan</button>
+                        </form>
+                    </div>
+                    <button type="button" (click)="open()">test data</button>
+            </mat-card-content>
+   
     </mat-card>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
   </div>
 </div>

@@ -19,7 +19,7 @@ export class ProvinceService {
       )
       .catch(
           (error: Response ) => {
-              return Observable.throw('Something went wrong ');
+            throw error;
           }
       );
   }

@@ -19,7 +19,7 @@ export class ProvinceResolver implements Resolve<any>{
       )
     .catch(
         (error: Response ) => {
-            return Observable.throw('Something went wrong ');
+          throw error;
           }
     );
   }

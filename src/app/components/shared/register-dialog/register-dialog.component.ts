@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 export interface DialogData {
   name: string;
   resellerCode: string;
+  orderCode: string;
 }
 
 @Component({
@@ -18,7 +19,6 @@ export class RegisterDialogComponent implements OnInit {
   @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit() {
-    console.log(this.data)
   }
 
 }

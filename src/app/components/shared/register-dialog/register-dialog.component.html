@@ -1,2 +1,20 @@
-Terima kasih kak {{ data.name }} atas pendaftarannya, nomor id reseller anda {{ data.resellerCode }}
-<button mat-button [mat-dialog-close]="data.resellerCode" cdkFocusInitial>Ok</button>
+<div class="container">
+    <div mat-dialog-content>
+      <p class="contains">Terima kasih telah melakukan entri data <br>
+         Nomor ID kak {{ data?.name }} : {{ data?.resellerCode }} <br>
+         Nomor order untuk paket pendaftarannya adalah {{ data?.orderCode }} <br>
+         Untuk cek status produksi paketan yang berisi katalog photobook <br>
+          dan kartu member bisa klik <a href="https://flow.photostory.id/#/cekorder/{{ data.orderCode }}" target="_blank">https://flow.photostory.id/#/cekorder/{{ data.orderCode }}</a><br>
+         Klik tautan ini untuk join ke channel Telegram Photostory <a href="https://t.me/photostorysupport" target="_blank">https://t.me/photostorysupport</a></p>
+      <p class="ttd">
+          Terima kasih <br>
+        <span style="font-style: italic">Photostory</span>,<br>
+        <span style="font-style: italic">0858-0116-9596</span>,<br>
+
+      </p>
+    </div>
+
+</div>
+<div mat-dialog-actions>
+    <button mat-flat-button [mat-dialog-close]="data.resellerCode" cdkFocusInitial color="primary">OK</button>
+</div>
