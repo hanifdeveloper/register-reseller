@@ -21,4 +21,9 @@ export class RegisterDialogComponent implements OnInit {
   ngOnInit() {
   }
 
+  copyToClipboard() {
+    console.log('copytoclipboard')
+
+  }
+
 }

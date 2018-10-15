@@ -61,6 +61,7 @@ export class RegisterComponent implements OnInit {
     this.provinces = this.route.snapshot.data['provinces'].data;
     this.dbx = new Dropbox({ accessToken: environment.dropboxKey });
     this.csId = this.route.snapshot.queryParams['ref'];
+    console.log(this.csId)
     this.searchTerm.valueChanges
     .debounceTime(200)
     .subscribe(data => {

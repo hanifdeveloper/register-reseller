@@ -13,7 +13,7 @@ import { RegisterService } from './../../services/register.service';
 
 export const routes: Routes = [
   { path: '', component: RegisterComponent },
-  { path: '/?ref=2', component: RegisterComponent }
+  { path: '/?ref=ref', component: RegisterComponent }
 
 
 ];

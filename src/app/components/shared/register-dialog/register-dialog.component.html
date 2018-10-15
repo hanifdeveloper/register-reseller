@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" id="container">
     <div mat-dialog-content>
       <p class="contains">Terima kasih telah melakukan entri data <br>
          Nomor ID kak {{ data?.name }} : {{ data?.resellerCode }} <br>
@@ -16,5 +16,7 @@
 
 </div>
 <div mat-dialog-actions>
-    <button mat-flat-button [mat-dialog-close]="data.resellerCode" cdkFocusInitial color="primary">OK</button>
+    <!-- <button mat-flat-button [mat-dialog-close]="data.resellerCode" cdkFocusInitial color="primary">OK</button> -->
+        <button mat-flat-button color="primary" (click)="copyToClipboard()">Copy</button>
+
 </div>
