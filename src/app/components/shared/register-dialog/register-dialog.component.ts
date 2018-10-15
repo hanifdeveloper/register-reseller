@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { ClipboardService } from 'ngx-clipboard';
 
 export interface DialogData {
   name: string;
@@ -13,17 +14,20 @@ export interface DialogData {
   styleUrls: ['./register-dialog.component.css']
 })
 export class RegisterDialogComponent implements OnInit {
-
+  isCopied = false;
   constructor(
+  private _clipboardService: ClipboardService,
   public dialogRef: MatDialogRef<RegisterDialogComponent>,
   @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit() {
   }
 
-  copyToClipboard() {
-    console.log('copytoclipboard')
 
+  copyData() {
+    this.isCopied = true;
+    const textData = document.getElementById('container').textContent;
+    this._clipboardService.copyFromContent(textData);
   }
 
 }

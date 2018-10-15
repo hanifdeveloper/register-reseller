@@ -15,8 +15,7 @@
     </div>
 
 </div>
-<div mat-dialog-actions>
-    <!-- <button mat-flat-button [mat-dialog-close]="data.resellerCode" cdkFocusInitial color="primary">OK</button> -->
-        <button mat-flat-button color="primary" (click)="copyToClipboard()">Copy</button>
 
+<div mat-dialog-actions>
+    <button mat-flat-button color="primary" (cbOnSuccess) = "isCopied = true" (click)="copyData()"> {{ isCopied ? 'Copied' : 'Copy' }}</button>
 </div>

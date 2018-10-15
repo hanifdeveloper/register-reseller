@@ -10,7 +10,6 @@ import { SubdistrictService } from './../../services/subdistrict.service';
 import { ProvinceService } from './../../services/province.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RegisterService } from './../../services/register.service';
-
 export const routes: Routes = [
   { path: '', component: RegisterComponent },
   { path: '/?ref=ref', component: RegisterComponent }

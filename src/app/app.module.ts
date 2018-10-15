@@ -8,6 +8,7 @@ import { MaterialModule } from './shared/material.module';
 import { ProvinceResolver } from './shared/resolver/province.resolver';
 import { HttpModule } from '@angular/http';
 import { RegisterDialogComponent } from './components/shared/register-dialog/register-dialog.component';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { RegisterDialogComponent } from './components/shared/register-dialog/reg
     BrowserAnimationsModule,
     AppRoutingModule,
     MaterialModule,
-    HttpModule
+    HttpModule,
+    ClipboardModule
   ],
   providers: [ProvinceResolver],
   bootstrap: [AppComponent]
