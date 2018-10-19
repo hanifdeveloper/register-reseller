@@ -12,7 +12,7 @@ export class ProvinceService {
   constructor(private http: Http) { }
 
   searchProvince(query) {
-    return this.http.get(environment.apiUrl + '/provinces/search/' + query)
+    return this.http.get(environment.apiUrl + '/provinces/search-bysubdistrict/' + query)
       .pipe(
         map(response => response.json()),
         take(1)

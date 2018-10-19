@@ -10,6 +10,7 @@ import { RegisterDialogComponent } from './../../components/shared/register-dial
 import { environment } from './../../../environments/environment';
 import 'rxjs/add/operator/debounceTime';
 import { MatSnackBar } from '@angular/material';
+import { PasswordValidation } from './password.validator';
 
 
 import { UUID } from 'angular2-uuid';
@@ -46,6 +47,7 @@ export class RegisterComponent implements OnInit {
   dbx: any;
   logoStatus: any;
   csId: number;
+  emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
   @ViewChild('fileInput') fileInput;
 
   constructor(
@@ -60,15 +62,17 @@ export class RegisterComponent implements OnInit {
   ) {
     this.provinces = this.route.snapshot.data['provinces'].data;
     this.dbx = new Dropbox({ accessToken: environment.dropboxKey });
-    this.csId = this.route.snapshot.queryParams['ref'];
+    this.csId = this.route.snapshot.queryParams['ref'] || '1';
     console.log(this.csId)
     this.searchTerm.valueChanges
-    .debounceTime(200)
+    .debounceTime(50)
     .subscribe(data => {
       if (data) {
-        this.provinceService.searchProvince(data).subscribe(result => {
-          this.searchResult = result.data;
-        });
+        if (data.length > 3) {
+          this.provinceService.searchProvince(data).subscribe(result => {
+            this.searchResult = result.data;
+          });
+        }
       }
     });
   }
@@ -94,20 +98,13 @@ export class RegisterComponent implements OnInit {
     this.searchTerm.setValue(event.source.value.subdistrict_name + ', ' + event.source.value.city_name + ', ' + event.source.value.province_name);
   }
 
-  confirmPassword(event) {
-    if (event.target.value === this.resellerForm.value.password) {
-      this.passwordMatch = true;
-    } else {
-      this.passwordMatch = false;
-    }
-  }
-
   createForm() {
     this.resellerForm = new FormGroup({
       'full_name': new FormControl(null, [Validators.required]),
       'username': new FormControl(null, [Validators.required]),
-      'email': new FormControl(null, [Validators.required]),
+      'email': new FormControl(null, [Validators.required, Validators.pattern(this.emailPattern)]),
       'password': new FormControl(null, [Validators.required]),
+      'confirm_password': new FormControl(null, [Validators.required]),
       'phone': new FormControl(null, [Validators.required]),
       'facebook': new FormControl(null),
       'instagram': new FormControl(null),
@@ -121,7 +118,9 @@ export class RegisterComponent implements OnInit {
       'logo_path': new FormControl(null),
       'is_has_logo': new FormControl(null),
       'db_file_id': new FormControl(null),
-      'maintenance_id': new FormControl(this.csId ? this.csId : 1),
+      'maintenance_id': new FormControl(null),
+    }, (formGroup: FormGroup) => {
+      return PasswordValidation.MatchPassword(formGroup);
     });
   }
 
@@ -179,6 +178,11 @@ export class RegisterComponent implements OnInit {
     this.logoImage = null;
   }
 
+  reset() {
+    this.resetForm();
+    console.log(this.resellerForm)
+  }
+
   async onSubmit() {
     this.loading = true;
     if (this.fileInput && this.fileInput.nativeElement.files && this.fileInput.nativeElement.files[0]) {
@@ -190,11 +194,11 @@ export class RegisterComponent implements OnInit {
       this.resellerForm.controls['db_file_id'].setValue(this.logoStatus.id);
       this.resellerForm.controls['is_has_logo'].setValue('1');
     }
+    this.resellerForm.controls.maintenance_id.setValue(this.csId);
     const valueForm = this.resellerForm.value;
     if (this.resellerForm.valid) {
       this.registerService.createReseller(valueForm).subscribe(
         response => {
-          console.log(response.data);
           this.loading = false;
           this.openDialog(response.data);
         },
@@ -205,7 +209,6 @@ export class RegisterComponent implements OnInit {
         },
       );
     } else {
-      console.log('failed');
       this.loading = false;
     }
   }

@@ -3,39 +3,42 @@
 
       <mat-card class="example-card">
             <mat-card-title class="title">
-                    PENDAFTARAN RESELLER PHOTOSTORY
-            </mat-card-title>
+                    DAFTAR RESELLER PHOTOSTORY
+            </mat-card-title>	
+
             <hr class="style-two">
             <mat-card-content>
                 <div class="example-container">
                         <form [formGroup]="resellerForm" (ngSubmit)="onSubmit()">
                             <mat-form-field>
                                 <input matInput placeholder="Nama" type="text" formControlName="full_name" required>
-                                <mat-error> Nama harus diisi</mat-error>
+                                <mat-error *ngIf="resellerForm.get('full_name').hasError('required')  && (resellerForm.get('full_name').dirty || resellerForm.get('full_name').touched)"> Nama harus diisi</mat-error>
                             </mat-form-field>
                             <mat-form-field>
-                                <input matInput placeholder="Email" type="text" formControlName="email" required>
-                                <mat-error> Email harus diisi</mat-error>
+                                <input matInput placeholder="Email" type="email" formControlName="email" required>
+                                <mat-error *ngIf="resellerForm.get('email').hasError('required')  && (resellerForm.get('email').dirty || resellerForm.get('email').touched)"> Email harus diisi</mat-error>
+                                <mat-error *ngIf="resellerForm.get('email').hasError('pattern')  && (resellerForm.get('email').dirty || resellerForm.get('email').touched)"> Email not valid</mat-error>
                             </mat-form-field>
                             <mat-form-field>
                                 <input matInput placeholder="Username" type="text" formControlName="username" required>
-                                <mat-error> Username harus diisi </mat-error>
+                                <mat-error *ngIf="resellerForm.get('username').hasError('required')  && (resellerForm.get('username').dirty || resellerForm.get('username').touched)"> Username harus diisi</mat-error>
+
                             </mat-form-field>
                         
                             <mat-form-field>
                                 <input matInput placeholder="Password" type="password" formControlName="password" required>
-                                <mat-error> Password harus diisi</mat-error>
+                                <mat-error *ngIf="resellerForm.get('password').hasError('required') && (resellerForm.get('password').dirty || resellerForm.get('password').touched)"> Password harus diisi</mat-error>
                             </mat-form-field>
                 
-                            <!-- <mat-form-field>
-                                <input matInput placeholder="Password Confirm" type="text" formControlName="passwordConfirm" required (keyup)="confirmPassword($event)" (blur)="confirmPassword($event)">
-                                <mat-error> Konfirmasi password</mat-error>
-                                <mat-error *ngIf="!passwordMatch"> Password tidak sama</mat-error>
-                            </mat-form-field> -->
+                            <mat-form-field>
+                                <input matInput placeholder="Confirm Password" type="password" formControlName="confirm_password" required>
+                                <mat-error class="error-message" *ngIf="resellerForm.get('confirm_password').hasError('MatchPassword') && (resellerForm.get('confirm_password').dirty || resellerForm.get('confirm_password').touched)">Password tidak sama</mat-error>
+                            </mat-form-field>
 
                             <mat-form-field>
                                 <input matInput placeholder="Nomor Telepon" type="text" formControlName="phone" required>
-                                <mat-error> Nomor Telepon harus diisi</mat-error>
+                                <mat-error *ngIf="resellerForm.get('phone').hasError('required') && (resellerForm.get('phone').dirty || resellerForm.get('phone').touched)"> Nomor telepon harus diisi</mat-error>
+
                             </mat-form-field>
                 
                             <mat-form-field>
@@ -51,7 +54,7 @@
                             </mat-form-field>
                 
                             <mat-form-field class="example-full-width">
-                                <input type="text" placeholder="Cari alamat" aria-label="Number" matInput [formControl]="searchTerm" [matAutocomplete]="auto">
+                                <input type="text" placeholder="Cari alamat berdasarkan kecamatan / kelurahan" aria-label="Number" matInput [formControl]="searchTerm" [matAutocomplete]="auto">
                                 <mat-autocomplete #auto="matAutocomplete">
                                     <mat-option *ngFor="let item of searchResult" (onSelectionChange)="onEnter($event)" (click)="onEnter($event)" [value]="item">
                                     {{ item.subdistrict_name }},  {{ item.city_name }},  {{ item.province_name }}
@@ -65,7 +68,8 @@
                                     {{province.name}}
                                     </mat-option>
                                 </mat-select>
-                                <mat-error> Provinsi harus diisi </mat-error>
+                                <mat-error *ngIf="resellerForm.get('province_id').hasError('required') && (resellerForm.get('province_id').dirty || resellerForm.get('province_id').touched)"> Provinsi harus diisi</mat-error>
+
                             </mat-form-field>
                 
                             <mat-form-field>
@@ -74,7 +78,8 @@
                                     {{city.name}}
                                     </mat-option>
                                 </mat-select>
-                                <mat-error> Kota harus diisi</mat-error>
+                                <mat-error *ngIf="resellerForm.get('city_id').hasError('required') && (resellerForm.get('city_id').dirty || resellerForm.get('city_id').touched)"> Kota harus diisi</mat-error>
+
                             </mat-form-field>
                 
                             <mat-form-field>
@@ -83,7 +88,8 @@
                                     {{subdistrict.name}}
                                     </mat-option>
                                 </mat-select>
-                                <mat-error> Kecamatan harus diisi</mat-error>
+                                <mat-error *ngIf="resellerForm.get('subdistrict_id').hasError('required') && (resellerForm.get('subdistrict_id').dirty || resellerForm.get('subdistrict_id').touched)"> Kelurahan harus diisi</mat-error>
+
                             </mat-form-field>
                             
                             <mat-form-field>
@@ -93,7 +99,8 @@
                             <mat-form-field>
                             <textarea matInput placeholder="Alamat" #input minlength="10" formControlName="address" required></textarea>
                             <mat-hint align="end">{{input.value?.length || 0}}/10</mat-hint>
-                            <mat-error> Alamat harus diisi </mat-error>
+                            <mat-error *ngIf="resellerForm.get('address').hasError('required') && (resellerForm.get('address').dirty || resellerForm.get('address').touched)"> Alamat harus diisi</mat-error>
+
                             </mat-form-field>
 
                             <label for="file-upload" class="custom-file-upload">
@@ -105,10 +112,13 @@
                             <br>
                             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
                             <br>
-                            <button [disabled]="!resellerForm.valid || loading" mat-flat-button color="primary" type="submit">Simpan</button>
+                            <button [disabled]="!resellerForm.valid" mat-flat-button color="primary" type="submit">Simpan</button>
+                            <br>
+                            <!-- <button mat-flat-button color="accent" (click)="reset()">Reset</button> -->
+
                         </form>
                     </div>
-                    <button type="button" (click)="open()">test data</button>
+                    <!-- <button type="button" (click)="open()">test data</button> -->
             </mat-card-content>
    
     </mat-card>
