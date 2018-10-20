@@ -23,4 +23,28 @@ export class RegisterService {
       );
   }
 
+  checkUsername(username: string) {
+    return this.http.post(environment.apiUrl + '/users/check-username', { username: username})
+      .pipe(
+        map(response => response.json())
+      )
+      .catch(
+          (error: Response ) => {
+              throw error;
+          }
+      );
+  }
+
+  checkEmail(email: string) {
+    return this.http.post(environment.apiUrl + '/users/check-email', { email: email})
+      .pipe(
+        map(response => response.json())
+      )
+      .catch(
+          (error: Response ) => {
+              throw error;
+          }
+      );
+  }
+
 }

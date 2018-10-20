@@ -18,10 +18,14 @@
                                 <input matInput placeholder="Email" type="email" formControlName="email" required>
                                 <mat-error *ngIf="resellerForm.get('email').hasError('required')  && (resellerForm.get('email').dirty || resellerForm.get('email').touched)"> Email harus diisi</mat-error>
                                 <mat-error *ngIf="resellerForm.get('email').hasError('pattern')  && (resellerForm.get('email').dirty || resellerForm.get('email').touched)"> Email not valid</mat-error>
+                                <mat-error *ngIf="resellerForm.get('email').hasError('emailTaken')  && (resellerForm.get('email').dirty || resellerForm.get('email').touched)"> Email sudah terdaftar</mat-error>
+
                             </mat-form-field>
                             <mat-form-field>
                                 <input matInput placeholder="Username" type="text" formControlName="username" required>
                                 <mat-error *ngIf="resellerForm.get('username').hasError('required')  && (resellerForm.get('username').dirty || resellerForm.get('username').touched)"> Username harus diisi</mat-error>
+                                <mat-error *ngIf="resellerForm.get('username').hasError('usernameTaken')  && (resellerForm.get('username').dirty || resellerForm.get('username').touched)"> Username tidak tersedia</mat-error>
+
 
                             </mat-form-field>
                         

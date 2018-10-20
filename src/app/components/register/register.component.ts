@@ -9,7 +9,9 @@ import { MatDialog } from '@angular/material';
 import { RegisterDialogComponent } from './../../components/shared/register-dialog/register-dialog.component';
 import { environment } from './../../../environments/environment';
 import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/map';
 import { MatSnackBar } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
 import { PasswordValidation } from './password.validator';
 
 
@@ -98,11 +100,24 @@ export class RegisterComponent implements OnInit {
     this.searchTerm.setValue(event.source.value.subdistrict_name + ', ' + event.source.value.city_name + ', ' + event.source.value.province_name);
   }
 
+  forbiddenEmail(control: FormControl): Promise<any> | Observable<any> {
+    return this.registerService.checkEmail(control.value).map(res => {
+      return res.data ? { emailTaken: true } : null;
+    });
+  }
+
+  forbiddenUsername(control: FormControl): Promise<any> | Observable<any> {
+    return this.registerService.checkUsername(control.value).map(res => {
+      return res.data ? { usernameTaken: true } : null;
+    });
+  }
+
+
   createForm() {
     this.resellerForm = new FormGroup({
       'full_name': new FormControl(null, [Validators.required]),
-      'username': new FormControl(null, [Validators.required]),
-      'email': new FormControl(null, [Validators.required, Validators.pattern(this.emailPattern)]),
+      'username': new FormControl(null, [Validators.required], this.forbiddenUsername.bind(this)),
+      'email': new FormControl(null, [Validators.required, Validators.pattern(this.emailPattern)], this.forbiddenEmail.bind(this)),
       'password': new FormControl(null, [Validators.required]),
       'confirm_password': new FormControl(null, [Validators.required]),
       'phone': new FormControl(null, [Validators.required]),
