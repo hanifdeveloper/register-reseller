@@ -9,6 +9,7 @@ import { ProvinceResolver } from './shared/resolver/province.resolver';
 import { HttpModule } from '@angular/http';
 import { RegisterDialogComponent } from './components/shared/register-dialog/register-dialog.component';
 import { ClipboardModule } from 'ngx-clipboard';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { ClipboardModule } from 'ngx-clipboard';
     AppRoutingModule,
     MaterialModule,
     HttpModule,
+    HttpClientModule,
     ClipboardModule
   ],
   providers: [ProvinceResolver],

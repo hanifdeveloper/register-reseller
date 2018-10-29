@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { environment } from './../../environments/environment';
-import { Http, Response } from '@angular/http';
+import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import { map, take } from 'rxjs/operators';
+import { Headers, ResponseContentType } from '@angular/http';
+import { Response, RequestOptions } from '@angular/http';
 
 @Injectable()
 export class RegisterService {
@@ -45,6 +47,11 @@ export class RegisterService {
               throw error;
           }
       );
+  }
+
+  getFile(userId: number): Observable<Blob> {
+    const options = new RequestOptions({responseType: ResponseContentType.Blob});
+    return this.http.get(environment.apiUrl + '/orders/create-pdf/' + userId, options).map((response: Response) => <Blob>response.blob());
   }
 
 }

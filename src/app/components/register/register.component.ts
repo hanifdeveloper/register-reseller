@@ -67,7 +67,7 @@ export class RegisterComponent implements OnInit {
     this.csId = this.route.snapshot.queryParams['ref'] || '1';
     console.log(this.csId)
     this.searchTerm.valueChanges
-    .debounceTime(50)
+    .debounceTime(1000)
     .subscribe(data => {
       if (data) {
         if (data.length > 3) {
@@ -175,6 +175,7 @@ export class RegisterComponent implements OnInit {
   openDialog(data) {
     const dialogRef = this.dialog.open(RegisterDialogComponent, {
       data: {
+        userId: data.user.id,
         name: data.user.full_name,
         resellerCode: data.user.reseller_code,
         orderCode: data.order_code
@@ -209,11 +210,11 @@ export class RegisterComponent implements OnInit {
       this.resellerForm.controls['db_file_id'].setValue(this.logoStatus.id);
       this.resellerForm.controls['is_has_logo'].setValue('1');
     }
-    this.resellerForm.controls.maintenance_id.setValue(this.csId);
     const valueForm = this.resellerForm.value;
     if (this.resellerForm.valid) {
       this.registerService.createReseller(valueForm).subscribe(
         response => {
+          console.log(response.data);
           this.loading = false;
           this.openDialog(response.data);
         },

@@ -18,4 +18,8 @@
 
 <div mat-dialog-actions>
     <button mat-flat-button color="primary" (cbOnSuccess) = "isCopied = true" (click)="copyData()"> {{ isCopied ? 'Copied' : 'Copy' }}</button>
+    &nbsp;
+    <button mat-flat-button color="accent" (cbOnSuccess) = "isCopied = true" (click)="download()">Download</button>
+    
 </div>
+
