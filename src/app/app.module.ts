@@ -6,7 +6,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './shared/material.module';
 import { ProvinceResolver } from './shared/resolver/province.resolver';
-import { HttpModule } from '@angular/http';
 import { RegisterDialogComponent } from './components/shared/register-dialog/register-dialog.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { HttpClientModule } from '@angular/common/http';
@@ -24,7 +23,6 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     AppRoutingModule,
     MaterialModule,
-    HttpModule,
     HttpClientModule,
     ClipboardModule
   ],
