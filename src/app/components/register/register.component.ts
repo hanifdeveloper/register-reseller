@@ -50,6 +50,7 @@ export class RegisterComponent implements OnInit {
   logoStatus: any;
   csId: number;
   emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
+  isLoadingOngkir = false;
   @ViewChild('fileInput') fileInput;
 
   constructor(
@@ -60,12 +61,12 @@ export class RegisterComponent implements OnInit {
     private provinceService: ProvinceService,
     private registerService: RegisterService,
     public dialog: MatDialog,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
   ) {
     this.provinces = this.route.snapshot.data['provinces'].data;
     this.dbx = new Dropbox({ accessToken: environment.dropboxKey });
     this.csId = this.route.snapshot.queryParams['ref'] || '1';
-    console.log(this.csId)
+    console.log(this.csId);
     this.searchTerm.valueChanges
     .debounceTime(1000)
     .subscribe(data => {
@@ -98,6 +99,7 @@ export class RegisterComponent implements OnInit {
     this.resellerForm.controls.subdistrict_id.setValue(event.source.value.subdistrict_id);
     // tslint:disable-next-line:max-line-length
     this.searchTerm.setValue(event.source.value.subdistrict_name + ', ' + event.source.value.city_name + ', ' + event.source.value.province_name);
+    this.countShippingCost();
   }
 
   forbiddenEmail(control: FormControl): Promise<any> | Observable<any> {
@@ -129,6 +131,7 @@ export class RegisterComponent implements OnInit {
       'subdistrict_id': new FormControl(null, [Validators.required]),
       'address': new FormControl(null, [Validators.required]),
       'postal_code': new FormControl(null),
+      'ongkir': new FormControl(null),
       'is_unverified': new FormControl('unverified'),
       'logo_path': new FormControl(null),
       'is_has_logo': new FormControl(null),
@@ -139,8 +142,17 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  resetAddress() {
+    this.searchTerm.setValue('');
+    this.resellerForm.controls['city_id'].setValue(null);
+    this.cities = null;
+    this.resellerForm.controls['subdistrict_id'].setValue(null);
+    this.subdistricts = null;
+
+  }
 
   provinceSelected(event) {
+    this.resetAddress();
     this.cityService.getCityByProvinceId(event.value).subscribe(
       response => {
         this.cities = response.data;
@@ -188,15 +200,35 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  countShippingCost() {
+    const cityId = this.resellerForm.controls['city_id'].value;
+    const weight = 1000;
+    this.isLoadingOngkir = true;
+    this.registerService.getOngkir(
+      501,
+      cityId,
+      weight,
+      'pos'
+    ).subscribe(response => {
+      const ongkir = response.cost[0].value;
+      console.log(ongkir);
+      this.resellerForm.controls['ongkir'].setValue(ongkir);
+      this.isLoadingOngkir = false;
+    });
+  }
+
   resetForm() {
     this.resellerForm.reset();
     this.searchTerm.setValue(null);
     this.logoImage = null;
   }
 
+  onChangeCity(event) {
+    this.countShippingCost();
+  }
+
   reset() {
     this.resetForm();
-    console.log(this.resellerForm)
   }
 
   async onSubmit() {
@@ -210,11 +242,11 @@ export class RegisterComponent implements OnInit {
       this.resellerForm.controls['db_file_id'].setValue(this.logoStatus.id);
       this.resellerForm.controls['is_has_logo'].setValue('1');
     }
+    this.resellerForm.controls['maintenance_id'].setValue(this.csId);
     const valueForm = this.resellerForm.value;
     if (this.resellerForm.valid) {
       this.registerService.createReseller(valueForm).subscribe(
         response => {
-          console.log(response.data);
           this.loading = false;
           this.openDialog(response.data);
         },

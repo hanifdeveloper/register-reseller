@@ -3,7 +3,7 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/r
 import { environment } from './../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
-import { map, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ProvinceResolver implements Resolve<any>{

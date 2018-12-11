@@ -7,5 +7,6 @@ export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000',
   dropboxPath: '/Logo',
-  dropboxKey: 'yJ5_8RVoZAAAAAAAAAAAMWonKgWAoc25PinXnKsXPtG_U-yc4U_dOUmJlPXhuY9M'
+  dropboxKey: 'yJ5_8RVoZAAAAAAAAAAAMWonKgWAoc25PinXnKsXPtG_U-yc4U_dOUmJlPXhuY9M',
+  rajaOngkirKey: 'cb5107e448d1c4f1b73d57305e1cea18'
 };
